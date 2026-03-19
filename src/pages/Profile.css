@@ -1,0 +1,196 @@
+.profile-header {
+  position: relative;
+  margin-bottom: 40px;
+}
+
+.profile-banner {
+  height: 220px;
+  background: linear-gradient(135deg, var(--primary), var(--secondary));
+  border-radius: var(--radius-xl);
+  opacity: 0.2;
+}
+
+.profile-info-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  padding: 0 40px;
+  margin-top: -55px;
+  position: relative;
+}
+
+.profile-avatar {
+  width: 110px !important;
+  height: 110px !important;
+  border: 4px solid var(--bg-primary);
+  box-shadow: var(--shadow-md);
+  flex-shrink: 0;
+  background: white;
+}
+
+.profile-user-details { 
+  flex: 1; 
+  padding-bottom: 8px;
+}
+
+.profile-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1;
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+
+.profile-email {
+  font-size: 1rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.profile-actions {
+  display: flex;
+  gap: 16px;
+  padding-bottom: 12px;
+}
+
+.profile-content-layout {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 40px;
+  padding: 0 48px;
+}
+
+.profile-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.profile-sidebar .card {
+  padding: 24px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.profile-sidebar .card-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--divider);
+  transition: all 0.2s ease;
+}
+
+.info-item:last-child { border-bottom: none; }
+.info-item:hover { transform: translateX(4px); }
+.info-item span { font-size: 1.4rem; }
+.info-item strong { color: var(--text-primary); font-weight: 700; font-size: 0.95rem; }
+
+/* Progress Bar Tweaks */
+.progress-bar {
+  height: 8px;
+  background: var(--bg-hover);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 12px;
+}
+
+.tab-btn {
+  padding: 10px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  transition: all 0.3s ease;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.tab-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.tab-btn.active {
+  background: white;
+  color: var(--primary);
+  box-shadow: var(--shadow-sm);
+  border-color: var(--divider);
+}
+
+/* Grid & Cards Alignment */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: stretch;
+}
+
+.profile-tab-content .card {
+  padding: 24px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Chip Scrolling */
+.chips-scroll {
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  padding: 4px 2px 12px;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE/Edge */
+  mask-image: linear-gradient(to right, black 85%, transparent 100%);
+}
+
+.chips-scroll::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.chips-scroll .chip {
+  flex-shrink: 0;
+}
+
+.section-title {
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-primary);
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--divider);
+}
+
+.info-item:last-child { border-bottom: none; }
+.info-item span { font-size: 1.4rem; }
+.info-item strong { color: var(--text-primary); font-weight: 700; }
+
+@media (max-width: 1100px) {
+  .profile-content-layout { grid-template-columns: 1fr; }
+  .profile-info-row { flex-direction: column; align-items: center; text-align: center; margin-top: -100px; }
+  .profile-avatar { width: 140px !important; height: 140px !important; }
+  .profile-user-details { padding-bottom: 0; }
+  .profile-actions { margin-top: 24px; }
+  .grid-2 { grid-template-columns: 1fr; }
+}
