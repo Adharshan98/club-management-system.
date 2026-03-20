@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useCallback } from 'react'
 import { 
   EVENTS as initialEvents, 
   ANNOUNCEMENTS as initialAnnouncements,
@@ -276,7 +276,7 @@ export function EventProvider({ children }) {
     setFeedback(prev => [...prev, newFeedback])
   }
 
-  const getLeaderboardData = () => {
+  const getLeaderboardData = useCallback((allUsers = []) => {
     // Student rankings based on 10 pts per attended event
     const studentPoints = {}
     registrations.filter(r => r.attended).forEach(r => {
@@ -285,9 +285,18 @@ export function EventProvider({ children }) {
     
     // Club rankings
     const clubPerformance = clubs.map(club => {
+      // 1. Hosting Points: 20 pts per approved event
       const clubEvents = events.filter(e => e.clubId === club.id && e.status === 'approved')
-      const eventPoints = clubEvents.length * 50
+      const hostPoints = clubEvents.length * 20
       
+      // 2. Completion Bonus: 30 pts if any student was marked as attended for the event
+      let completionPoints = 0
+      clubEvents.forEach(e => {
+        const hasAttendance = registrations.some(r => r.eventId === e.id && r.attended)
+        if (hasAttendance) completionPoints += 30
+      })
+      
+      // 3. Feedback Bonus: Avg Rating * 10
       const clubFeedback = feedback.filter(f => {
         const event = events.find(e => e.id === f.eventId)
         return event && event.clubId === club.id
@@ -297,11 +306,11 @@ export function EventProvider({ children }) {
         ? clubFeedback.reduce((acc, curr) => acc + curr.rating, 0) / clubFeedback.length 
         : 0
       
-      const feedbackPoints = Math.round(avgRating * 20)
+      const feedbackPoints = Math.round(avgRating * 10)
       
       return {
         ...club,
-        score: eventPoints + feedbackPoints,
+        score: hostPoints + completionPoints + feedbackPoints,
         avgRating,
         feedbackCount: clubFeedback.length
       }
@@ -309,12 +318,20 @@ export function EventProvider({ children }) {
 
     return {
       topMembers: Object.keys(studentPoints).map(regNo => {
-        const student = members.find(m => m.regNo === regNo) || { name: 'Unknown User', regNo }
-        return { ...student, points: studentPoints[regNo] }
+        // Search in allUsers first, then members, then fallback
+        const userDetails = allUsers.find(u => u.regNo === regNo)
+        const memberDetails = members.find(m => m.regNo === regNo)
+        
+        return { 
+          name: userDetails?.name || memberDetails?.name || 'Unknown Student',
+          dept: userDetails?.dept || memberDetails?.dept || 'N/A',
+          regNo,
+          points: studentPoints[regNo] 
+        }
       }).sort((a, b) => b.points - a.points),
       topClubs: clubPerformance
     }
-  }
+  }, [registrations, events, feedback, clubs, members])
 
   return (
     <EventContext.Provider value={{ 

@@ -1,11 +1,13 @@
 import { useState, useMemo } from 'react'
 import { useEvents } from '../context/EventContext'
+import { useAuth } from '../context/AuthContext'
 import './Leaderboard.css'
 
 export default function Leaderboard() {
   const { getLeaderboardData } = useEvents()
+  const { users } = useAuth()
   const [activeTab, setActiveTab] = useState('members') // 'members' or 'clubs'
-  const { topMembers, topClubs } = useMemo(() => getLeaderboardData(), [getLeaderboardData])
+  const { topMembers, topClubs } = useMemo(() => getLeaderboardData(users), [getLeaderboardData, users])
 
   return (
     <div className="page-container animate-fade-in">
