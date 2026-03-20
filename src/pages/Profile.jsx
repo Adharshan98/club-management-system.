@@ -4,9 +4,36 @@ import { useEvents } from '../context/EventContext'
 import './Profile.css'
 
 export default function Profile() {
-  const { user, logout } = useAuth()
+  const { user, logout, updateUser } = useAuth()
   const { members, registrations, events, clubs } = useEvents()
   const [activeTab, setActiveTab] = useState('profile')
+  const [isEditing, setIsEditing] = useState(false)
+  const [editValues, setEditValues] = useState({
+    name: user?.name || '',
+    dept: user?.dept || '',
+    regNo: user?.regNo || ''
+  })
+
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing)
+    if (!isEditing) {
+      setEditValues({
+        name: user.name,
+        dept: user.dept,
+        regNo: user.regNo
+      })
+    }
+  }
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target
+    setEditValues(prev => ({ ...prev, [name]: value }))
+  }
+
+  const handleSave = () => {
+    updateUser(user.id, editValues)
+    setIsEditing(false)
+  }
 
   const getInitials = (name) => name ? name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) : '?'
 
@@ -19,16 +46,56 @@ export default function Profile() {
         <div className="profile-info-row">
           <div className="avatar avatar-xl profile-avatar">{getInitials(user.name)}</div>
           <div className="profile-user-details">
-            <h1 className="profile-name">{user.name}</h1>
-            <p className="profile-email">📧 {user.email}</p>
-            <div className="flex gap-8 mt-8">
-              <span className={`badge ${user.role === 'admin' ? 'role-admin' : user.role === 'clubhead' ? 'role-clubhead' : 'role-student'}`}>{user.role}</span>
-              <span className="badge badge-info">🏛️ {user.dept}</span>
-              <span className="badge badge-primary">🆔 {user.regNo}</span>
-            </div>
+            {isEditing ? (
+              <div className="profile-edit-form">
+                <input 
+                  type="text" 
+                  name="name" 
+                  value={editValues.name} 
+                  onChange={handleInputChange} 
+                  className="edit-input name-input"
+                  placeholder="Full Name"
+                />
+                <div className="flex gap-8 mt-8">
+                  <input 
+                    type="text" 
+                    name="dept" 
+                    value={editValues.dept} 
+                    onChange={handleInputChange} 
+                    className="edit-input badge-input"
+                    placeholder="Department"
+                  />
+                  <input 
+                    type="text" 
+                    name="regNo" 
+                    value={editValues.regNo} 
+                    onChange={handleInputChange} 
+                    className="edit-input badge-input"
+                    placeholder="Registration No"
+                  />
+                </div>
+              </div>
+            ) : (
+              <>
+                <h1 className="profile-name">{user.name}</h1>
+                <p className="profile-email">📧 {user.email}</p>
+                <div className="flex gap-8 mt-8">
+                  <span className={`badge ${user.role === 'admin' ? 'role-admin' : user.role === 'clubhead' ? 'role-clubhead' : 'role-student'}`}>{user.role}</span>
+                  <span className="badge badge-info">🏛️ {user.dept}</span>
+                  <span className="badge badge-primary">🆔 {user.regNo}</span>
+                </div>
+              </>
+            )}
           </div>
           <div className="profile-actions">
-            <button className="btn btn-primary btn-sm">Edit Profile</button>
+            {isEditing ? (
+              <>
+                <button className="btn btn-success btn-sm" onClick={handleSave}>Save</button>
+                <button className="btn btn-secondary btn-sm" onClick={() => setIsEditing(false)}>Cancel</button>
+              </>
+            ) : (
+              <button className="btn btn-primary btn-sm" onClick={handleEditToggle}>Edit Profile</button>
+            )}
             <button className="btn btn-danger btn-sm" onClick={logout}>Logout</button>
           </div>
         </div>
